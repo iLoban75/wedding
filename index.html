@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#f7e4df">
+  <meta name="color-scheme" content="light">
+  <title>Свадьба Анны и Максима</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Marck+Script&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-screen="login">
+
+  <!-- Рисунки-заготовки: цветок и ветка (используются в углах страницы) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="flower" viewBox="-20 -20 40 40">
+        <g stroke="#e3a9a2" stroke-width=".6" fill="#f6d3ce">
+          <ellipse cx="0" cy="-9" rx="6" ry="9"/>
+          <ellipse cx="0" cy="-9" rx="6" ry="9" transform="rotate(72)"/>
+          <ellipse cx="0" cy="-9" rx="6" ry="9" transform="rotate(144)"/>
+          <ellipse cx="0" cy="-9" rx="6" ry="9" transform="rotate(216)"/>
+          <ellipse cx="0" cy="-9" rx="6" ry="9" transform="rotate(288)"/>
+        </g>
+        <circle r="4" fill="#d9bf86"/>
+        <circle r="1.6" fill="#b08a4a"/>
+      </symbol>
+      <symbol id="branch" viewBox="0 0 240 240">
+        <path d="M10 10C70 40 110 90 130 230" fill="none" stroke="#b08a4a" stroke-width="1.6" stroke-linecap="round"/>
+        <g stroke-width=".7">
+          <ellipse cx="58.5" cy="29.2" rx="17" ry="6.5" transform="rotate(-7 58.5 29.2)" fill="#bfcba9" stroke="#9db088"/>
+          <ellipse cx="44.1" cy="46" rx="17" ry="6.5" transform="rotate(88 44.1 46)" fill="#dcc994" stroke="#c4a965"/>
+          <ellipse cx="87.3" cy="61.8" rx="17" ry="6.5" transform="rotate(7 87.3 61.8)" fill="#c9d4b5" stroke="#9db088"/>
+          <ellipse cx="69.3" cy="74.7" rx="17" ry="6.5" transform="rotate(102 69.3 74.7)" fill="#bfcba9" stroke="#9db088"/>
+          <ellipse cx="110.5" cy="105.8" rx="17" ry="6.5" transform="rotate(20 110.5 105.8)" fill="#dcc994" stroke="#c4a965"/>
+          <ellipse cx="90.1" cy="114.3" rx="17" ry="6.5" transform="rotate(115 90.1 114.3)" fill="#c9d4b5" stroke="#9db088"/>
+          <ellipse cx="128.6" cy="163.5" rx="17" ry="6.5" transform="rotate(30 128.6 163.5)" fill="#bfcba9" stroke="#9db088"/>
+          <ellipse cx="107" cy="168.3" rx="17" ry="6.5" transform="rotate(125 107 168.3)" fill="#dcc994" stroke="#c4a965"/>
+        </g>
+        <use href="#flower" x="82" y="68" width="36" height="36"/>
+        <use href="#flower" x="98" y="124" width="28" height="28"/>
+        <use href="#flower" x="38" y="22" width="22" height="22"/>
+        <circle cx="126" cy="205" r="4.2" fill="#f0c4be" stroke="#e3a9a2" stroke-width=".6"/>
+        <circle cx="123" cy="215" r="2.6" fill="#f6d3ce"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- Фон: градиент, золотое свечение и ветки по углам -->
+  <div class="bg" aria-hidden="true">
+    <div class="bg__glow bg__glow--a"></div>
+    <div class="bg__glow bg__glow--b"></div>
+    <svg class="corner corner--tl" viewBox="0 0 240 240"><use href="#branch"/></svg>
+    <svg class="corner corner--tr" viewBox="0 0 240 240"><use href="#branch"/></svg>
+    <svg class="corner corner--br" viewBox="0 0 240 240"><use href="#branch"/></svg>
+  </div>
+  <canvas id="petals" aria-hidden="true"></canvas>
+
+  <main>
+
+    <!-- 1. Приветствие и ввод кода -->
+    <section id="screen-login" class="screen screen--center is-active" aria-labelledby="login-title">
+      <div class="login">
+        <div class="ornament ornament--static" aria-hidden="true"><i></i></div>
+        <p class="eyebrow">Свадебное приглашение</p>
+        <h1 class="names" id="login-title">
+          <span class="gold" data-bind="bride">Анна</span>
+          <span class="amp">&amp;</span>
+          <span class="gold" data-bind="groom">Максим</span>
+        </h1>
+        <p class="lead">Мы приготовили для вас особенное приглашение.<br>Введите код, который мы вам отправили.</p>
+
+        <form id="code-form" class="code-form" autocomplete="off" novalidate>
+          <label class="sr-only" for="code-input">Код приглашения</label>
+          <input id="code-input" class="code-input" type="text" inputmode="text"
+                 autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false"
+                 maxlength="32" placeholder="XXXX-XXXX-XXXX" enterkeyhint="go">
+          <p id="code-error" class="code-error" role="alert" hidden></p>
+          <button id="code-submit" class="btn" type="submit">Открыть приглашение</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2. Конверт -->
+    <section id="screen-envelope" class="screen screen--center" aria-label="Конверт с приглашением">
+      <div class="env-stage" id="env-stage">
+        <p class="eyebrow env-eyebrow">Для вас есть письмо</p>
+
+        <div class="envelope" id="envelope">
+          <div class="envelope__back"></div>
+
+          <div class="envelope__card">
+            <span class="card__names gold" id="card-names"></span>
+            <span class="card__line">приглашают вас на свадьбу</span>
+            <span class="card__date" id="card-date"></span>
+          </div>
+
+          <svg class="envelope__front" viewBox="0 0 300 204" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="gSide" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#f4dcd7"/><stop offset="1" stop-color="#ebc8c1"/>
+              </linearGradient>
+              <linearGradient id="gBottom" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f6e2dd"/><stop offset="1" stop-color="#eecfc9"/>
+              </linearGradient>
+            </defs>
+            <polygon points="0,0 150,112 0,204" fill="url(#gSide)" stroke="rgba(176,138,74,.45)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+            <polygon points="300,0 150,112 300,204" fill="url(#gSide)" stroke="rgba(176,138,74,.45)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+            <polygon points="0,204 150,112 300,204" fill="url(#gBottom)" stroke="rgba(176,138,74,.45)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+          </svg>
+
+          <svg class="envelope__flap" viewBox="0 0 300 112" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="gFlap" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f1d3cd"/><stop offset="1" stop-color="#e6bfb7"/>
+              </linearGradient>
+            </defs>
+            <polygon points="0,0 300,0 150,112" fill="url(#gFlap)" stroke="rgba(176,138,74,.55)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+          </svg>
+
+          <p class="envelope__to"><small>Для</small><span id="env-to"></span></p>
+          <button class="envelope__seal" id="seal" type="button" aria-label="Открыть конверт">А&amp;М</button>
+        </div>
+
+        <p class="env-tap">Нажмите на печать, чтобы открыть</p>
+      </div>
+    </section>
+
+    <!-- 3. Само приглашение -->
+    <article id="screen-invite" class="screen invite" aria-label="Свадебное приглашение">
+
+      <header class="hero">
+        <p class="eyebrow reveal">Мы женимся</p>
+        <h2 class="hero__names reveal" style="--d:.15s">
+          <span class="gold" data-bind="bride"></span>
+          <span class="hero__amp">&amp;</span>
+          <span class="gold" data-bind="groom"></span>
+        </h2>
+        <p class="hero__date reveal" style="--d:.3s" id="hero-date"></p>
+        <div class="ornament reveal" style="--d:.4s" aria-hidden="true"><i></i></div>
+        <div class="countdown reveal" id="countdown" style="--d:.5s" role="timer" aria-label="До свадьбы осталось"></div>
+        <a class="hero__scroll reveal" href="#greeting" aria-label="Листайте вниз" style="--d:.8s"><span></span></a>
+      </header>
+
+      <section class="section" id="greeting">
+        <div class="panel reveal">
+          <div class="ornament" aria-hidden="true"><i></i></div>
+          <p class="eyebrow">Персональное приглашение</p>
+          <h3 class="greeting__title gold" id="g-title"></h3>
+          <p class="lead" id="g-text"></p>
+          <p class="greeting__note" id="g-note" hidden></p>
+          <p class="greeting__seats" id="g-seats" hidden></p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="panel reveal">
+          <p class="eyebrow">Когда и где</p>
+          <h3 class="h-section">Дата и место</h3>
+          <p class="when__date" id="w-date"></p>
+          <p class="when__time" id="w-time"></p>
+          <div class="ornament" aria-hidden="true"><i></i></div>
+          <p class="when__venue" id="w-venue"></p>
+          <p class="when__address" id="w-address"></p>
+          <a class="btn btn--ghost" id="w-map" href="#" target="_blank" rel="noopener">Открыть на карте</a>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="panel reveal">
+          <p class="eyebrow">Программа</p>
+          <h3 class="h-section">Как пройдёт наш день</h3>
+          <ol class="timeline" id="timeline"></ol>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="panel reveal">
+          <p class="eyebrow">Дресс-код</p>
+          <h3 class="h-section">Цвета праздника</h3>
+          <p class="lead" id="dress-text"></p>
+          <div class="swatches" id="swatches"></div>
+        </div>
+      </section>
+
+      <section class="section" id="rsvp">
+        <div class="panel reveal">
+          <p class="eyebrow">Ответ</p>
+          <h3 class="h-section">Вы придёте?</h3>
+          <p class="lead" id="rsvp-lead"></p>
+
+          <form class="rsvp-form" id="rsvp-form" novalidate>
+            <label class="field" id="field-count" hidden>
+              <span>Сколько человек будет</span>
+              <select id="rsvp-count"></select>
+            </label>
+            <label class="field">
+              <span>Комментарий (необязательно)</span>
+              <textarea id="rsvp-comment" rows="3" maxlength="400" placeholder="Аллергии, пожелания, вопросы…"></textarea>
+            </label>
+            <div class="rsvp__buttons">
+              <button class="btn" type="button" data-answer="yes">С радостью приду</button>
+              <button class="btn btn--ghost" type="button" data-answer="no">Не смогу прийти</button>
+            </div>
+            <p class="rsvp__status" id="rsvp-status" role="status"></p>
+          </form>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="panel reveal">
+          <p class="eyebrow">Остались вопросы?</p>
+          <h3 class="h-section">Контакты</h3>
+          <div class="contacts" id="contacts"></div>
+        </div>
+      </section>
+
+      <footer class="footer reveal">
+        <div class="ornament" aria-hidden="true"><i></i></div>
+        <p class="footer__script">Будем счастливы видеть вас</p>
+        <p class="footer__names"><span data-bind="bride"></span> и <span data-bind="groom"></span></p>
+      </footer>
+    </article>
+
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/crypto.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

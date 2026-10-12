@@ -1,0 +1,6 @@
+# ВАЖНО: в папке private лежат имена гостей и их коды. Её нельзя публиковать!
+private/
+codes.txt
+node_modules/
+.DS_Store
+Thumbs.db

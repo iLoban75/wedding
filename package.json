@@ -1,0 +1,10 @@
+{
+  "name": "wedding-invitation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Свадебное приглашение: у каждого гостя свой код, по которому открывается его персональное приглашение",
+  "scripts": {
+    "build": "node build.mjs",
+    "preview": "npx --yes serve ."
+  }
+}
